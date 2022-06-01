@@ -5,8 +5,15 @@ export default class AuthController {
         const { email, password } = request.all()
         
         try {
-            const token = await auth.use('api').attempt(email, password)
-            return token
+            const token = await auth.use('api').attempt(email, password)            
+
+            return response.json({
+                name: token.user.name,
+                email: token.user.email,
+                token: token.token,
+                type: token.type,
+            })
+
         } catch {
             return response.status(401).send({
                 success: false,

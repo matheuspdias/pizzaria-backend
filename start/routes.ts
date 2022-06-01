@@ -20,7 +20,14 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
-Route.get('/ping', 'HomeController.ping')
-
 Route.post('/login', 'AuthController.login')
 Route.post('/logout', 'AuthController.logout')
+
+Route.group(() => {
+    Route.get('/ping', 'HomeController.ping')
+
+    //Route group user
+    Route.group(() => {
+        Route.get('/me', 'UsersController.me')
+    }).prefix('/users')
+}).prefix('/api/v1').middleware('auth:api')
