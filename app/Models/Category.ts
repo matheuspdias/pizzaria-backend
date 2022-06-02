@@ -15,6 +15,9 @@ export default class Category extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
+  @column.dateTime({ columnName: 'deleted_at' })
+  public deletedAt: DateTime | null
+
   @hasMany(() => Product)
   public products: HasMany<typeof Product>
 }
