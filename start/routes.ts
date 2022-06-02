@@ -30,4 +30,7 @@ Route.group(() => {
     Route.group(() => {
         Route.get('/me', 'UsersController.me')
     }).prefix('/users')
+
+    //Route group category
+    Route.resource('/categories', 'CategoriesController')
 }).prefix('/api/v1').middleware('auth:api')
