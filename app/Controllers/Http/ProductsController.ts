@@ -3,7 +3,11 @@ import Product from 'App/Models/Product'
 
 export default class ProductsController {
   public async index({ request, response }: HttpContextContract) {
-    const products = await Product.query().preload('category')
+    const products = await Product.query()
+      .whereNull('deleted_at')
+      .preload('category', (category) => {
+        category.select('id', 'name')
+      })
 
     return response.json(products)
   }
