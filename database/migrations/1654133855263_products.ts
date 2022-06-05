@@ -12,7 +12,7 @@ export default class extends BaseSchema {
       table.string('price', 255).notNullable()
       table.string('banner', 255)
       table.timestamp('created_at', { useTz: true })
-      table.timestamp('updated_at', { useTz: true })
+      table.timestamp('updated_at', { useTz: true }).nullable()
       table.timestamp('deleted_at', { useTz: true }).nullable()
     })
   }

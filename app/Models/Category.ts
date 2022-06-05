@@ -12,7 +12,7 @@ export default class Category extends BaseModel {
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({ autoUpdate: true })
   public updatedAt: DateTime
 
   @column.dateTime({ columnName: 'deleted_at' })

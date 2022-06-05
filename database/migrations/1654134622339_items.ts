@@ -9,8 +9,8 @@ export default class extends BaseSchema {
       table.integer('order_id').unsigned().references('id').inTable('orders').onDelete('CASCADE')
       table.integer('product_id').unsigned().references('id').inTable('products').onDelete('CASCADE')
       table.integer('amount')
-      table.timestamp('created_at', { useTz: true })
-      table.timestamp('updated_at', { useTz: true })
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).nullable()
       table.timestamp('deleted_at', { useTz: true }).nullable()
     })
   }
