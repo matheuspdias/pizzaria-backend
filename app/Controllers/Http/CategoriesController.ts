@@ -65,7 +65,7 @@ export default class CategoriesController {
 
         //soft delete
         if(category) {
-            category.deletedAt = DateTime.utc()
+            category.deleted_at = DateTime.utc()
             await category.save()
         }
 
