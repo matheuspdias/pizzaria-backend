@@ -4,11 +4,15 @@ import Product from 'App/Models/Product'
 
 export default class ProductsController {
   public async index({ request, response }: HttpContextContract) {
-    const products = await Product.query()
-      .whereNull('deleted_at')
-      .preload('category', (category) => {
-        category.select('id', 'name')
-      })
+
+    const query = Product.query().whereNull('deleted_at')
+      .preload('category', (category) => category.select('id', 'name'))
+
+    if (request.qs().category_id) { 
+      query.where('category_id', request.qs().category_id)
+    }
+
+    const products = await query.exec()
 
       products.map((product) => {
         if (product.banner) {
