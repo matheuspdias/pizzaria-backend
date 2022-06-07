@@ -18,7 +18,7 @@ export default class OrdersController {
       name: schema.string.optional()
     })
     
-    const validate = await request.validate({schema: orderSchema})
+    await request.validate({schema: orderSchema})
 
     const order = await Order.create(data)
 
@@ -45,15 +45,14 @@ export default class OrdersController {
 
     await request.validate({schema: orderSchema})
 
-    const orderExist = await Order.findBy('id', data.order_id)
-
+    const orderExist = await Order.query().where('id', data.order_id).whereNull('deleted_at').first()
     if (!orderExist) {
       return response.status(400).json({
         error: 'Pedido não encontrado'
       })
     }
 
-    const product = await Product.findBy('id', data.product_id)
+    const product = await Product.query().where('id', data.product_id).whereNull('deleted_at').first()
 
     if (!product) {
       return response.status(400).json({
@@ -70,6 +69,19 @@ export default class OrdersController {
     return response.json({
       status: 'Item adicionado com sucesso',
       item: orderItem
+    })
+  }
+
+  public async remove({ request, response, params }: HttpContextContract) {
+    const item = await Item.query().where('id', params.id).whereNull('deleted_at').first()
+
+    if (item) {
+      item.deleted_at = DateTime.utc()
+      await item.save()
+    }
+
+    return response.json({
+      status: 'Item excluído com sucesso'
     })
   }
 

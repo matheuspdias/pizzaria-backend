@@ -40,4 +40,5 @@ Route.group(() => {
     //Route group order
     Route.resource('/orders', 'OrdersController')
     Route.post('/orders/add', 'OrdersController.add')
+    Route.delete('/orders/remove/:id', 'OrdersController.remove')
 }).prefix('/api/v1').middleware('auth:api')
