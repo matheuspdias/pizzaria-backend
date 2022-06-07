@@ -19,10 +19,13 @@ export default class Order extends BaseModel {
   public name: string
 
   @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
+  public created_at: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updatedAt: DateTime
+  public updated_at: DateTime
+
+  @column.dateTime({ columnName: 'deleted_at' })
+  public deleted_at: DateTime | null
 
   @hasMany(() => Item)
   public items: HasMany<typeof Item>  
