@@ -39,4 +39,5 @@ Route.group(() => {
 
     //Route group order
     Route.resource('/orders', 'OrdersController')
+    Route.post('/orders/add', 'OrdersController.add')
 }).prefix('/api/v1').middleware('auth:api')

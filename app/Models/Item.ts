@@ -11,9 +11,15 @@ export default class Item extends BaseModel {
   @column()
   public product_id: number
 
-  @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
+  @column()
+  public amount: number
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updatedAt: DateTime
+  @column.dateTime({ autoCreate: true })
+  public created_at: DateTime
+
+  @column.dateTime({ autoUpdate: true })
+  public updated_at: DateTime
+
+  @column.dateTime({ columnName: 'deleted_at' })
+  public deleted_at: DateTime | null
 }
