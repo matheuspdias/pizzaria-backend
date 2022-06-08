@@ -23,10 +23,13 @@ export default class Product extends BaseModel {
   public banner: string
 
   @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
+  public created_at: DateTime
 
   @column.dateTime({ autoUpdate: true })
-  public updatedAt: DateTime
+  public updated_at: DateTime
+
+  @column.dateTime({ columnName: 'deleted_at' })
+  public deleted_at: DateTime | null
 
   @belongsTo(() => Category, {
     foreignKey: 'category_id',
