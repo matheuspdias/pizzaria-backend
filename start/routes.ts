@@ -24,8 +24,6 @@ Route.post('/login', 'AuthController.login')
 Route.post('/logout', 'AuthController.logout')
 
 Route.group(() => {
-    Route.get('/ping', 'HomeController.ping')
-
     //Route group user
     Route.group(() => {
         Route.get('/me', 'UsersController.me')
@@ -42,3 +40,5 @@ Route.group(() => {
     Route.post('/orders/add', 'OrdersController.add')
     Route.delete('/orders/remove/:id', 'OrdersController.remove')
 }).prefix('/api/v1').middleware('auth:api')
+
+Route.get('/ping', 'HomeController.ping')
