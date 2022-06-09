@@ -16,6 +16,6 @@ RUN yarn
 
 USER node
 
-EXPOSE 3333
+EXPOSE 80
 
 ENTRYPOINT ["node","ace","serve","--watch"]
