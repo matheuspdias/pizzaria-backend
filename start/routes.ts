@@ -39,6 +39,12 @@ Route.group(() => {
     Route.resource('/orders', 'OrdersController')
     Route.post('/orders/add', 'OrdersController.add')
     Route.delete('/orders/remove/:id', 'OrdersController.remove')
+    Route.patch('/orders/:id/send', 'OrdersController.sendOrder')
 }).prefix('/api/v1').middleware('auth:api')
 
+Route.get('/', ({ response }) => {
+    return response.json({
+        message: 'Bem vindo a API.'
+    })
+})
 Route.get('/ping', 'HomeController.ping')
