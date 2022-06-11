@@ -1,5 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, belongsTo, BelongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import Product from './Product'
+import Order from './Order'
 
 export default class Item extends BaseModel {
   @column({ isPrimary: true })
@@ -22,4 +24,14 @@ export default class Item extends BaseModel {
 
   @column.dateTime({ columnName: 'deleted_at' })
   public deleted_at: DateTime | null
+
+  @belongsTo(() => Product, {
+    foreignKey: 'product_id',
+  })
+  public product: BelongsTo<typeof Product>
+
+  @belongsTo(() => Order, {
+    foreignKey: 'order_id',
+  })
+  public order: BelongsTo<typeof Order>
 }

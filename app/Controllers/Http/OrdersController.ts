@@ -6,7 +6,17 @@ import Product from 'App/Models/Product'
 import { DateTime } from 'luxon'
 
 export default class OrdersController {
-  public async index({}: HttpContextContract) {}
+  public async index({ request, response }: HttpContextContract) {
+    const orders = await Order.query().whereNull('deleted_at').where('draft', false).where('status', false).orderBy('created_at', 'desc')
+
+    if (!orders) {
+      return response.status(400).json({
+        error: 'Nenhum pedido encontrado'
+      })
+    }
+
+    return response.json(orders)
+  }
 
   public async create({}: HttpContextContract) {}
 
@@ -85,7 +95,15 @@ export default class OrdersController {
     })
   }
 
-  public async show({}: HttpContextContract) {}
+  public async show({ params, response }: HttpContextContract) {
+    const order = await Item.query().where('order_id', params.id).whereNull('deleted_at').preload('product', builder => {
+      builder.select('id', 'name', 'description' ,'price')
+    }).preload('order', builder => {
+      builder.select('id', 'table', 'name', 'status', 'draft')
+    })
+
+    return response.json(order)
+  }
 
   public async edit({}: HttpContextContract) {}
 
@@ -102,6 +120,25 @@ export default class OrdersController {
 
     return response.json({
       status: 'Pedido excluído com sucesso'
+    })
+  }
+
+  public async sendOrder({ params, request, response }: HttpContextContract) {
+    const order_id = params.id    
+    const order = await Order.query().where('id', order_id).whereNull('deleted_at').first()
+
+    if (!order) {
+      return response.status(400).json({
+        error: 'Pedido não encontrado'
+      })
+    } else {
+      order.draft = false
+      await order.save()
+    }
+
+    return response.json({
+      status: 'Pedido enviado com sucesso',
+      order: order
     })
   }
 }
