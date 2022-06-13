@@ -9,16 +9,14 @@ export default class OrdersController {
   public async index({ request, response }: HttpContextContract) {
     const orders = await Order.query().whereNull('deleted_at').where('draft', false).where('status', false).orderBy('created_at', 'desc')
 
-    if (!orders) {
-      return response.status(400).json({
-        error: 'Nenhum pedido encontrado'
+    if (!orders || orders.length === 0) {
+      return response.status(200).json({
+        message: 'Nenhum pedido encontrado'
       })
     }
 
     return response.json(orders)
   }
-
-  public async create({}: HttpContextContract) {}
 
   public async store({ request, response }: HttpContextContract) {
     const data = request.only(['table', 'name'])
@@ -83,7 +81,10 @@ export default class OrdersController {
   }
 
   public async remove({ request, response, params }: HttpContextContract) {
-    const item = await Item.query().where('id', params.id).whereNull('deleted_at').first()
+    const data = request.only(['item_id', 'order_id'])
+    const item = await Item.query().where('id', data.item_id)
+      .where('order_id', data.order_id)
+      .whereNull('deleted_at').first()
 
     if (item) {
       item.deleted_at = DateTime.utc()
@@ -96,13 +97,21 @@ export default class OrdersController {
   }
 
   public async show({ params, response }: HttpContextContract) {
-    const order = await Item.query().where('order_id', params.id).whereNull('deleted_at').preload('product', builder => {
+    const order = await Order.query().where('id', params.id).whereNull('deleted_at').first()
+
+    if(!order) {
+      return response.status(400).json({
+        error: 'Pedido não encontrado'
+      })
+    }
+
+    const orderItems = await Item.query().where('order_id', params.id).whereNull('deleted_at').preload('product', builder => {
       builder.select('id', 'name', 'description' ,'price')
     }).preload('order', builder => {
       builder.select('id', 'table', 'name', 'status', 'draft')
     })
 
-    return response.json(order)
+    return response.json(orderItems)
   }
 
   public async edit({}: HttpContextContract) {}
@@ -123,8 +132,8 @@ export default class OrdersController {
     })
   }
 
-  public async sendOrder({ params, request, response }: HttpContextContract) {
-    const order_id = params.id    
+  public async sendOrder({ request, response }: HttpContextContract) {
+    const order_id = request.input('order_id')
     const order = await Order.query().where('id', order_id).whereNull('deleted_at').first()
 
     if (!order) {
@@ -138,6 +147,25 @@ export default class OrdersController {
 
     return response.json({
       status: 'Pedido enviado com sucesso',
+      order: order
+    })
+  }
+
+  public async finishOrder({  request, response }: HttpContextContract) {
+    const order_id = request.input('order_id')
+    const order = await Order.query().where('id', order_id).whereNull('deleted_at').first()
+
+    if(!order) {
+      return response.status(400).json({
+        error: 'Pedido não encontrado'
+      })
+    } else {
+      order.status = true
+      await order.save()
+    }
+
+    return response.json({
+      status: 'Pedido finalizado com sucesso',
       order: order
     })
   }
