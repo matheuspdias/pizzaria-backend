@@ -13,7 +13,7 @@ services:
     depends_on:
       - db
   db:
-    image: mariadb
+    image: mysql
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
