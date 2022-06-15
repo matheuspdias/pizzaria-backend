@@ -5,7 +5,7 @@ export default class extends BaseSchema {
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id')
+      table.increments('id').primary()
       table.integer('table').notNullable()
       table.boolean('status').defaultTo(false)
       table.boolean('draft').defaultTo(true)
